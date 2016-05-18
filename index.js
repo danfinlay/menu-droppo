@@ -1,8 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-var Raphael = require('raphael')
+const Raphael = require('raphael')
 const findDOMNode = require('react-dom').findDOMNode
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
 module.exports = MenuDroppoComponent
 
@@ -13,33 +14,69 @@ function MenuDroppoComponent() {
 }
 
 MenuDroppoComponent.prototype.render = function() {
-  const isOpen = this.props.isOpen
-  const speed = this.props.speed || '300ms'
 
-  const message = isOpen ? 'Open' : 'Closed'
+  const speed = this.props.speed || '300ms'
+  const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
 
   this.manageListeners()
 
   let style = this.props.style || {}
-  style.position = 'absolute'
-  style.overflow = 'hidden'
+  style.position = 'fixed'
+  style.zIndex = zIndex
 
-  let innerStyle = this.props.innerStyle || {}
-  innerStyle.transition = `transform ${speed} ease-in-out`
-  innerStyle.transform = `translateY(${ isOpen ? 0 : -110 }%)`
-  innerStyle.zIndex = this.props.zIndex || '1'
-  innerStyle.position = 'relative'
+  return (
+    h('.menu-droppo-container', {
+      style,
+    }, [
+      h('style', `
+        .menu-droppo-enter {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(-100%);
+        }
+
+        .menu-droppo-enter.menu-droppo-enter-active {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(0%);
+        }
+
+        .menu-droppo-leave {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(0%);
+        }
+
+        .menu-droppo-leave.menu-droppo-leave-active {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(-100%);
+        }
+      `),
+
+      h(ReactCSSTransitionGroup, {
+        className: 'css-transition-group',
+        transitionName: 'menu-droppo',
+        transitionEnterTimeout: parseInt(speed),
+        transitionLeaveTimeout: parseInt(speed),
+      }, this.renderPrimary())
+    ])
+  )
+}
+
+MenuDroppoComponent.prototype.renderPrimary = function() {
+  const isOpen = this.props.isOpen
+  if (!isOpen) {
+    return null
+    return h('span', {
+      key: 'menu-droppo-null',
+      style: {
+        height: '0px',
+      }
+    })
+  }
 
   return (
     h('.menu-droppo', {
-      style,
+      key: 'menu-droppo-drawer'
     },
-
-    h('.menu-droppo-slidey-bit', {
-      style: innerStyle,
-    },
-      [ this.props.children ])
-    )
+    [ this.props.children ])
   )
 }
 
@@ -55,9 +92,11 @@ MenuDroppoComponent.prototype.manageListeners = function() {
 }
 
 MenuDroppoComponent.prototype.componentDidMount = function() {
-  window.addEventListener('click', this.windowWasClicked.bind(this))
-  var container = findDOMNode(this)
-  this.container = container
+  if (this) {
+    window.addEventListener('click', this.windowWasClicked.bind(this))
+    var container = findDOMNode(this)
+    this.container = container
+  }
 }
 
 MenuDroppoComponent.prototype.componentWillUnmount = function() {

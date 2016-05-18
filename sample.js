@@ -34,6 +34,7 @@ function reRender() {
       ),
       h(DropMenu, {
         isOpen, // Dictates whether dropped down or not
+        zIndex: -1,
         onClickOutside(event) {  // Handle click outside events yourself,
           isOpen = false // For example by toggling the `isOpen` property.
           reRender()

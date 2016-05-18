@@ -20,22 +20,25 @@ MenuDroppoComponent.prototype.render = function() {
 
   this.manageListeners()
 
+  let style = this.props.style || {}
+  style.position = 'absolute'
+  style.overflow = 'hidden'
+
+  let innerStyle = this.props.innerStyle || {}
+  innerStyle.transition = `transform ${speed} ease-in-out`
+  innerStyle.transform = `translateY(${ isOpen ? 0 : -110 }%)`
+  innerStyle.zIndex = this.props.zIndex || '1'
+  innerStyle.position = 'relative'
+
   return (
     h('.menu-droppo', {
-      style: {
-        position: 'absolute',
-        overflow: 'hidden',
-      },
+      style,
     },
 
     h('.menu-droppo-slidey-bit', {
-      style: {
-        transition: `transform ${speed} ease-in-out`,
-        transform:  `translateY(${ isOpen ? 0 : -100 }%)`,
-        zIndex: this.props.zIndex || '1',
-        position: 'relative',
-      },
-    }, [ this.props.children ])
+      style: innerStyle,
+    },
+      [ this.props.children ])
     )
   )
 }

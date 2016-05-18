@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 var Raphael = require('raphael')
+const findDOMNode = require('react-dom').findDOMNode
 
 module.exports = MenuDroppoComponent
 
@@ -22,12 +23,20 @@ MenuDroppoComponent.prototype.render = function() {
   return (
     h('.menu-droppo', {
       style: {
+        position: 'absolute',
+        overflow: 'hidden',
+      },
+    },
+
+    h('.menu-droppo-slidey-bit', {
+      style: {
         transition: `transform ${speed} ease-in-out`,
         transform:  `translateY(${ isOpen ? 0 : -100 }%)`,
-        zIndex: this.props.zIndex || '-1',
+        zIndex: this.props.zIndex || '1',
         position: 'relative',
       },
     }, [ this.props.children ])
+    )
   )
 }
 
@@ -41,3 +50,35 @@ MenuDroppoComponent.prototype.manageListeners = function() {
     this.outsideClickHandler = null
   }
 }
+
+MenuDroppoComponent.prototype.componentDidMount = function() {
+  window.addEventListener('click', this.windowWasClicked.bind(this))
+  var container = findDOMNode(this)
+  this.container = container
+}
+
+MenuDroppoComponent.prototype.componentWillUnmount = function() {
+  window.removeEventListener('click', this.windowWasClicked.bind(this))
+}
+
+MenuDroppoComponent.prototype.windowWasClicked = function(event) {
+  const target = event.target
+  const container = findDOMNode(this)
+  const isOpen = this.props.isOpen
+
+  if (target !== container && !isDescendant(this.container, event.target)) {
+    this.outsideClickHandler(event)
+  }
+}
+
+function isDescendant(parent, child) {
+   var node = child.parentNode;
+   while (node != null) {
+     if (node == parent) {
+       return true;
+     }
+     node = node.parentNode;
+   }
+   return false;
+}
+

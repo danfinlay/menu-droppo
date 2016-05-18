@@ -1,5 +1,6 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
+var Sandiwch = require('sandwich-expando')
 
 const DropMenu = require('./')
 
@@ -21,14 +22,15 @@ function reRender() {
         style: {
           background: 'blue',
         }
-      }, h('button', {
+      }, h(Sandiwch, {
+          isOpen,
           onClick(event) {
             event.preventDefault()
             event.stopPropagation()
             isOpen = !isOpen       // For example by toggling the `isOpen` property.
             reRender()
           },
-        }, isOpen ? 'Close' : 'Open')
+        })
       ),
       h(DropMenu, {
         isOpen, // Dictates whether dropped down or not

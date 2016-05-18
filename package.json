@@ -44,5 +44,8 @@
   "bugs": {
     "url": "https://github.com/flyswatter/menu-droppo/issues"
   },
-  "homepage": "https://github.com/flyswatter/menu-droppo#readme"
+  "homepage": "https://github.com/flyswatter/menu-droppo#readme",
+  "devDependencies": {
+    "sandwich-expando": "^1.0.2"
+  }
 }

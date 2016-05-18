@@ -66,7 +66,9 @@ MenuDroppoComponent.prototype.windowWasClicked = function(event) {
   const container = findDOMNode(this)
   const isOpen = this.props.isOpen
 
-  if (target !== container && !isDescendant(this.container, event.target)) {
+  if (target !== container &&
+     !isDescendant(this.container, event.target) &&
+     this.outsideClickHandler) {
     this.outsideClickHandler(event)
   }
 }

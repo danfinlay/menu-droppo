@@ -3,84 +3,41 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 var Raphael = require('raphael')
 
-module.exports = SandwichExpandoComponent
+module.exports = MenuDroppoComponent
 
 
-inherits(SandwichExpandoComponent, Component)
-function SandwichExpandoComponent() {
+inherits(MenuDroppoComponent, Component)
+function MenuDroppoComponent() {
   Component.call(this)
 }
 
-SandwichExpandoComponent.prototype.render = function() {
+MenuDroppoComponent.prototype.render = function() {
   const isOpen = this.props.isOpen
-  const onClick = this.props.onClick
+  const speed = this.props.speed || '300ms'
 
   const message = isOpen ? 'Open' : 'Closed'
 
-  const topRot = `rotate(${isOpen ? 0 : 45}deg)`
-  const botRot = `rotate(${isOpen ? 0 : -45}deg)`
-
-  const padding = this.props.padding || 5
-  const barHeight = this.props.barHeight || 5
-
-  const width = this.props.width || 44
-  const innerWidth = width - barHeight
-  const innerHeight = Math.sqrt(Math.pow(innerWidth, 2) / 2)
-  const height = innerHeight + barHeight
-
-  const padBetween = (height - (barHeight * 3)) / 2
-
-  const transformOrigin = `${barHeight/2}px ${barHeight/2}px`
+  this.manageListeners()
 
   return (
-    h('.sandwich-expando', {
-      onClick,
+    h('.menu-droppo', {
       style: {
-        padding: this.props.padding || 5,
-        width: `${width}px`,
-        height: `${height}px`,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        transition: `transform ${speed} ease-in-out`,
+        transform:  `translateY(${ isOpen ? 0 : -100 }%)`,
+        zIndex: this.props.zIndex || '-1',
+        position: 'relative',
       },
-    }, [
-
-      h('div', {
-        style: {
-          height: `${barHeight}px`,
-          width: '100%',
-          borderRadius: '100px',
-          background: this.props.color || 'grey',
-          transition: 'transform 300ms ease-in-out',
-          transformOrigin: `${barHeight/2}px ${barHeight/2}px`,
-          transform: topRot,
-        },
-      }),
-
-      h('div', {
-        style: {
-          height: `${barHeight}px`,
-          opacity: isOpen ? '1.0' : '0.0',
-          width: '100%',
-          borderRadius: '100px',
-          background: this.props.color || 'grey',
-          transition: 'opacity 300ms ease-in-out',
-        },
-      }),
-
-      h('div', {
-        style: {
-          height: `${barHeight}px`,
-          width: '100%',
-          borderRadius: '100px',
-          background: this.props.color || 'grey',
-          transition: 'transform 300ms ease-in-out',
-          transformOrigin: `${barHeight/2}px ${barHeight/2}px`,
-          transform: botRot,
-        },
-      }),
-
-    ])
+    }, [ this.props.children ])
   )
 }
 
+MenuDroppoComponent.prototype.manageListeners = function() {
+  const isOpen = this.props.isOpen
+  const onClickOutside = this.props.onClickOutside
+
+  if (isOpen) {
+    this.outsideClickHandler = onClickOutside
+  } else if (isOpen) {
+    this.outsideClickHandler = null
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "menu-droppo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Installation: `npm install menu-droppo -S`.",
   "main": "index.js",
   "scripts": {

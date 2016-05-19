@@ -24,6 +24,7 @@ MenuDroppoComponent.prototype.render = function() {
   style.position = 'fixed'
   style.zIndex = zIndex
 
+
   return (
     h('.menu-droppo-container', {
       style,
@@ -72,9 +73,12 @@ MenuDroppoComponent.prototype.renderPrimary = function() {
     })
   }
 
+  let innerStyle = this.props.innerStyle || {}
+
   return (
     h('.menu-droppo', {
-      key: 'menu-droppo-drawer'
+      key: 'menu-droppo-drawer',
+      style: innerStyle,
     },
     [ this.props.children ])
   )

@@ -21,7 +21,9 @@ MenuDroppoComponent.prototype.render = function() {
   this.manageListeners()
 
   let style = this.props.style || {}
-  style.position = 'fixed'
+  if (!('position' in style)) {
+    style.position = 'fixed'
+  }
   style.zIndex = zIndex
 
 
@@ -115,7 +117,7 @@ MenuDroppoComponent.prototype.windowWasClicked = function(event) {
   if (target !== container &&
      !isDescendant(this.container, event.target) &&
      this.outsideClickHandler) {
-    this.outsideClickHandler(event)
+     this.outsideClickHandler(event)
   }
 }
 

@@ -99,14 +99,15 @@ MenuDroppoComponent.prototype.manageListeners = function() {
 
 MenuDroppoComponent.prototype.componentDidMount = function() {
   if (this) {
-    window.addEventListener('click', this.windowWasClicked.bind(this))
+    this.windowClickHandler = this.windowWasClicked.bind(this);
+    window.addEventListener('click', this.windowClickHandler)
     var container = findDOMNode(this)
     this.container = container
   }
 }
 
 MenuDroppoComponent.prototype.componentWillUnmount = function() {
-  window.removeEventListener('click', this.windowWasClicked.bind(this))
+  window.removeEventListener('click', this.windowClickHandler)
 }
 
 MenuDroppoComponent.prototype.windowWasClicked = function(event) {

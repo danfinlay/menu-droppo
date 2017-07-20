@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Raphael = require('raphael')
 const findDOMNode = require('react-dom').findDOMNode
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
 module.exports = MenuDroppoComponent
 
@@ -31,34 +30,7 @@ MenuDroppoComponent.prototype.render = function() {
     h('.menu-droppo-container', {
       style,
     }, [
-      h('style', `
-        .menu-droppo-enter {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-100%);
-        }
-
-        .menu-droppo-enter.menu-droppo-enter-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
-
-        .menu-droppo-leave {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
-
-        .menu-droppo-leave.menu-droppo-leave-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-100%);
-        }
-      `),
-
-      h(ReactCSSTransitionGroup, {
-        className: 'css-transition-group',
-        transitionName: 'menu-droppo',
-        transitionEnterTimeout: parseInt(speed),
-        transitionLeaveTimeout: parseInt(speed),
-      }, this.renderPrimary())
+      this.renderPrimary()
     ])
   )
 }
@@ -132,4 +104,3 @@ function isDescendant(parent, child) {
    }
    return false;
 }
-

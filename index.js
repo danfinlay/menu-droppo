@@ -70,19 +70,21 @@ MenuDroppoComponent.prototype.manageListeners = function() {
 }
 
 MenuDroppoComponent.prototype.componentDidMount = function() {
-  if (this) {
-    this.windowClickHandler = this.windowWasClicked.bind(this);
-    window.addEventListener('click', this.windowClickHandler)
+  if (this && document.body) {
+    this.globalClickHandler = this.globalClickOccurred.bind(this);
+    document.body.addEventListener('click', this.globalClickHandler)
     var container = findDOMNode(this)
     this.container = container
   }
 }
 
 MenuDroppoComponent.prototype.componentWillUnmount = function() {
-  window.removeEventListener('click', this.windowClickHandler)
+  if (this && document.body) {
+    document.body.removeEventListener('click', this.globalClickHandler)
+  }
 }
 
-MenuDroppoComponent.prototype.windowWasClicked = function(event) {
+MenuDroppoComponent.prototype.globalClickOccurred = function(event) {
   const target = event.target
   const container = findDOMNode(this)
   const isOpen = this.props.isOpen

@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Raphael = require('raphael')
 const findDOMNode = require('react-dom').findDOMNode
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
 module.exports = MenuDroppoComponent
 
@@ -15,6 +16,7 @@ function MenuDroppoComponent() {
 MenuDroppoComponent.prototype.render = function() {
 
   const speed = this.props.speed || '300ms'
+  const useCssTransition = this.props.useCssTransition
   const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
 
   this.manageListeners()
@@ -25,12 +27,40 @@ MenuDroppoComponent.prototype.render = function() {
   }
   style.zIndex = zIndex
 
-
   return (
     h('.menu-droppo-container', {
       style,
     }, [
-      this.renderPrimary()
+      h('style', `
+        .menu-droppo-enter {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(-200%);
+        }
+
+        .menu-droppo-enter.menu-droppo-enter-active {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(0%);
+        }
+
+        .menu-droppo-leave {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(0%);
+        }
+
+        .menu-droppo-leave.menu-droppo-leave-active {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(-200%);
+        }
+      `),
+
+      !!useCssTransition
+        ? h(ReactCSSTransitionGroup, {
+          className: 'css-transition-group',
+          transitionName: 'menu-droppo',
+          transitionEnterTimeout: parseInt(speed),
+          transitionLeaveTimeout: parseInt(speed),
+        }, this.renderPrimary())
+        : this.renderPrimary()
     ])
   )
 }
